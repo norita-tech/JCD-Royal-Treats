@@ -1,7 +1,7 @@
 /* HTTP client for the JCD Royal Treats backend API.
    Falls back gracefully when the server is not running. */
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = '/api';
 
 const api = {
   /* Token helpers */
