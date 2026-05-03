@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — JCD Royal Treats</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a class="navbar-brand" href="index.html">
+        <span class="logo-icon">👑</span>
+        <div class="brand-text">
+          <span class="brand-name">JCD Royal Treats</span>
+          <span class="brand-tagline">Baked with love</span>
+        </div>
+      </a>
+      <ul class="navbar-links" id="nav-links">
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="products.html" data-i18n="nav.menu">Menu</a></li>
+        <li><a href="cart.html" data-i18n="nav.cart">Cart</a></li>
+        <li><a href="admin.html" data-i18n="nav.admin">Admin</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <div class="locale-selectors">
+          <div class="selector-wrap">
+            <button class="selector-btn" onclick="I18N.toggleDropdown('country-menu')">
+              <span class="jcd-country-flag">🇨🇭</span>
+              <span class="jcd-country-name">Switzerland</span>
+              <span class="selector-arrow">▾</span>
+            </button>
+            <div class="selector-menu" id="country-menu">
+              <button data-country="ch" onclick="I18N.setCountry('ch')">🇨🇭 Switzerland</button>
+              <button data-country="de" onclick="I18N.setCountry('de')">🇩🇪 Germany</button>
+              <button data-country="fr" onclick="I18N.setCountry('fr')">🇫🇷 France</button>
+            </div>
+          </div>
+          <div class="selector-wrap">
+            <button class="selector-btn" onclick="I18N.toggleDropdown('lang-menu')">
+              <span class="jcd-lang-code">EN</span>
+              <span class="selector-arrow">▾</span>
+            </button>
+            <div class="selector-menu" id="lang-menu">
+              <button data-lang="en" onclick="I18N.setLanguage('en')">🇬🇧 English</button>
+              <button data-lang="fr" onclick="I18N.setLanguage('fr')">🇫🇷 Français</button>
+              <button data-lang="de" onclick="I18N.setLanguage('de')">🇩🇪 Deutsch</button>
+            </div>
+          </div>
+        </div>
+        <a href="cart.html" class="cart-btn">
+          🛒 <span class="cart-count" style="display:none">0</span> Cart
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1 data-i18n="checkout.pageTitle">🔒 Checkout</h1>
+    <p data-i18n="checkout.pageSub">Almost there — fill in your details to place your order</p>
+  </div>
+
+  <!-- CHECKOUT CONTENT -->
+  <section>
+    <div class="container">
+
+      <!-- Empty cart guard -->
+      <div id="empty-checkout" style="display:none">
+        <div class="empty-cart">
+          <span class="empty-icon">🛒</span>
+          <h3 data-i18n="checkout.emptyTitle">Nothing to checkout</h3>
+          <p data-i18n="checkout.emptyMsg">Your cart is empty. Add some treats first!</p>
+          <a href="products.html" class="btn btn-primary btn-lg" data-i18n="checkout.emptyBtn">Browse Menu</a>
+        </div>
+      </div>
+
+      <!-- Order success screen -->
+      <div id="order-success" style="display:none">
+        <div class="success-section">
+          <div class="success-card">
+            <span class="success-icon">🎉</span>
+            <h2 data-i18n="checkout.successTitle">Order Placed!</h2>
+            <p data-i18n="checkout.successMsg">Thank you for your order! We'll prepare your treats right away.</p>
+            <div id="payment-instructions" style="margin:1.25rem 0;padding:1rem 1.25rem;background:var(--cream);border-radius:var(--radius-sm);font-size:0.9rem;color:var(--text-mid);text-align:left;line-height:1.7"></div>
+            <p style="font-size:0.85rem;color:var(--text-light)" id="order-ref"></p>
+            <a href="products.html" class="btn btn-primary btn-lg" style="margin-top:0.5rem" data-i18n="checkout.shopMore">Shop More Treats</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main checkout layout -->
+      <div class="checkout-layout" id="checkout-main">
+
+        <!-- LEFT: Form -->
+        <div class="checkout-form">
+
+          <!-- Contact -->
+          <div class="form-section">
+            <h3 data-i18n="checkout.contact">👤 Contact Information</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="first-name" data-i18n="checkout.firstName">First Name *</label>
+                <input type="text" id="first-name" placeholder="Jane" autocomplete="given-name" />
+              </div>
+              <div class="form-group">
+                <label for="last-name" data-i18n="checkout.lastName">Last Name *</label>
+                <input type="text" id="last-name" placeholder="Doe" autocomplete="family-name" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email" data-i18n="checkout.email">Email Address *</label>
+                <input type="email" id="email" placeholder="jane@example.com" autocomplete="email" />
+              </div>
+              <div class="form-group">
+                <label for="phone" data-i18n="checkout.phone">Phone Number *</label>
+                <input type="tel" id="phone" placeholder="+41 xx xxx xxxx" autocomplete="tel" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Delivery Address (hidden for pickup) -->
+          <div class="form-section" id="delivery-section">
+            <h3 data-i18n="checkout.delivery">🚚 Delivery Address</h3>
+            <div class="form-group">
+              <label for="address" data-i18n="checkout.address">Street Address *</label>
+              <input type="text" id="address" placeholder="123 Main Street" autocomplete="street-address" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city" data-i18n="checkout.city">City *</label>
+                <input type="text" id="city" placeholder="Basel" autocomplete="address-level2" />
+              </div>
+              <div class="form-group">
+                <label for="postal" data-i18n="checkout.postal">Postal Code *</label>
+                <input type="text" id="postal" placeholder="4001" autocomplete="postal-code" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="notes" data-i18n="checkout.notes">Delivery Notes (optional)</label>
+              <textarea id="notes" placeholder="Special instructions, apartment number, etc."></textarea>
+            </div>
+          </div>
+
+          <!-- Payment -->
+          <div class="form-section">
+            <h3 data-i18n="checkout.payment">💳 Payment Method</h3>
+            <div class="payment-options">
+              <label class="payment-option selected" id="pay-pickup">
+                <input type="radio" name="payment" value="pickup" checked onchange="selectPayment(this)" />
+                <div class="payment-label">
+                  <strong data-i18n="checkout.pickup">🏠 Cash at Pickup</strong>
+                  <span data-i18n="checkout.pickupSub">Pick up from our address, pay in cash</span>
+                </div>
+              </label>
+              <label class="payment-option" id="pay-paypal">
+                <input type="radio" name="payment" value="paypal" onchange="selectPayment(this)" />
+                <div class="payment-label">
+                  <strong data-i18n="checkout.paypal">💳 PayPal</strong>
+                  <span data-i18n="checkout.paypalSub">Secure online payment via PayPal</span>
+                </div>
+              </label>
+              <label class="payment-option" id="pay-bank">
+                <input type="radio" name="payment" value="bank" onchange="selectPayment(this)" />
+                <div class="payment-label">
+                  <strong data-i18n="checkout.bank">🏦 Bank Transfer</strong>
+                  <span data-i18n="checkout.bankSub">Direct bank transfer to our account</span>
+                </div>
+              </label>
+            </div>
+
+            <!-- Pickup info (shown by default) -->
+            <div id="pickup-note" class="payment-note" style="background:#f0fdf4;border-left:3px solid #16a34a;">
+              <p>📍 <strong data-i18n="checkout.pickupNote">Pick up at: Käppelierainweg 27, 4147 Aesch, Switzerland</strong></p>
+              <p style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-light)">No delivery fee applies for pickup orders.</p>
+            </div>
+
+            <!-- PayPal info -->
+            <div id="paypal-note" class="payment-note" style="display:none">
+              <p>💳 <span data-i18n="checkout.paypalNote">After placing your order, please send your payment to our PayPal: noritalumnue2@gmail.com — use your order reference as the payment note.</span></p>
+            </div>
+
+            <!-- Bank transfer info -->
+            <div id="bank-note" class="payment-note" style="display:none">
+              <p>🏦 <span data-i18n="checkout.bankNote">After placing your order, transfer the exact amount. Bank details will be sent to your email.</span></p>
+            </div>
+          </div>
+
+          <!-- Error message -->
+          <p id="checkout-error" style="color:var(--danger);font-size:0.875rem;margin-bottom:1rem;display:none"></p>
+
+          <button class="btn btn-primary btn-lg btn-block" onclick="placeOrder()" data-i18n="checkout.placeOrder">
+            Place Order →
+          </button>
+        </div>
+
+        <!-- RIGHT: Order Summary -->
+        <div class="order-summary" id="checkout-summary">
+          <h3>Order Summary</h3>
+          <div id="summary-items"></div>
+          <div class="summary-row"><span>Subtotal</span><span id="sum-subtotal"></span></div>
+          <div class="summary-row"><span>Delivery</span><span id="sum-delivery"></span></div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span class="price" id="sum-total"></span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-light);margin-top:1rem;text-align:center" data-i18n="checkout.secure">
+            🔒 Your details are safe and secure
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-brand-name">👑 JCD Royal Treats</div>
+        <p>Bringing the warmth and richness of homemade pastries to your door. Made fresh, baked with love.</p>
+      </div>
+      <div>
+        <h4 data-i18n="footer.menuTitle">Menu</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="products.html?cat=baked">Baked Goods</a></li>
+          <li><a href="products.html?cat=savory">Savory</a></li>
+          <li><a href="products.html?cat=chips">Chips &amp; Snacks</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="footer.linksTitle">Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="cart.html">My Cart</a></li>
+          <li><a href="checkout.html">Checkout</a></li>
+          <li><a href="admin.html">Admin Panel</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="footer.contactTitle">Contact</h4>
+        <ul>
+          <li><a href="mailto:noritalumnue2@gmail.com">📧 noritalumnue2@gmail.com</a></li>
+          <li><a href="#">📱 +41 xx xxx xxxx</a></li>
+          <li><a href="#">📍 Käppelierainweg 27, 4147 Aesch, Switzerland</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer.copy">© 2025 JCD Royal Treats. All rights reserved.</span>
+      <span data-i18n="footer.tagline">Made with ❤️ and lots of butter</span>
+    </div>
+  </footer>
+
+  <div id="cart-toast" class="toast"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function getDeliveryForPayment(payment) {
+      return payment === 'pickup' ? 0 : Cart.getDelivery();
+    }
+
+    function populateSummary() {
+      const items    = Cart.getItems();
+      const payment  = document.querySelector('input[name="payment"]:checked')?.value || 'pickup';
+      const subtotal = Cart.getSubtotal();
+      const delivery = getDeliveryForPayment(payment);
+      const total    = subtotal + delivery;
+
+      if (!items.length) {
+        document.getElementById('empty-checkout').style.display = 'block';
+        document.getElementById('checkout-main').style.display  = 'none';
+        return;
+      }
+
+      document.getElementById('summary-items').innerHTML = items.map(item => `
+        <div class="summary-row">
+          <span>${item.emoji} ${item.name} × ${item.qty}</span>
+          <span>${formatPrice(item.price * item.qty)}</span>
+        </div>`).join('');
+
+      document.getElementById('sum-subtotal').textContent = formatPrice(subtotal);
+      document.getElementById('sum-delivery').textContent = delivery === 0 ? '—' : formatPrice(delivery);
+      document.getElementById('sum-total').textContent    = formatPrice(total);
+    }
+
+    function selectPayment(radio) {
+      document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+      radio.closest('.payment-option').classList.add('selected');
+
+      const isPickup = radio.value === 'pickup';
+      document.getElementById('pickup-note').style.display  = isPickup ? 'block' : 'none';
+      document.getElementById('paypal-note').style.display  = radio.value === 'paypal' ? 'block' : 'none';
+      document.getElementById('bank-note').style.display    = radio.value === 'bank'   ? 'block' : 'none';
+
+      /* Show/hide delivery address section */
+      document.getElementById('delivery-section').style.display = isPickup ? 'none' : 'block';
+
+      populateSummary();
+    }
+
+    async function placeOrder() {
+      const firstName = document.getElementById('first-name').value.trim();
+      const lastName  = document.getElementById('last-name').value.trim();
+      const email     = document.getElementById('email').value.trim();
+      const phone     = document.getElementById('phone').value.trim();
+      const payment   = document.querySelector('input[name="payment"]:checked').value;
+      const isPickup  = payment === 'pickup';
+      const address   = isPickup ? 'Käppelierainweg 27' : document.getElementById('address').value.trim();
+      const city      = isPickup ? 'Aesch'              : document.getElementById('city').value.trim();
+      const postal    = isPickup ? '4147'               : document.getElementById('postal').value.trim();
+      const notes     = document.getElementById('notes')?.value.trim() || '';
+      const errEl     = document.getElementById('checkout-error');
+
+      if (!firstName || !lastName || !email || !phone) {
+        errEl.textContent = 'Please fill in your contact details.';
+        errEl.style.display = 'block';
+        errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      if (!isPickup && (!address || !city || !postal)) {
+        errEl.textContent = 'Please fill in your delivery address.';
+        errEl.style.display = 'block';
+        errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errEl.textContent = 'Please enter a valid email address.';
+        errEl.style.display = 'block';
+        return;
+      }
+      errEl.style.display = 'none';
+
+      const subtotal    = Cart.getSubtotal();
+      const deliveryFee = getDeliveryForPayment(payment);
+      const total       = subtotal + deliveryFee;
+
+      const orderData = {
+        firstName, lastName, email, phone, address, city, postal, notes,
+        paymentMethod: payment,
+        items:        Cart.getItems(),
+        subtotal, deliveryFee, total,
+      };
+
+      const btn = document.querySelector('[onclick="placeOrder()"]');
+      btn.disabled = true;
+      btn.textContent = 'Placing order…';
+
+      let ref;
+      try {
+        try {
+          const result = await api.createOrder(orderData);
+          ref = result.ref;
+        } catch {
+          ref = `JCD-${Date.now()}-OFFLINE`;
+          const orders = JSON.parse(localStorage.getItem('jcd_orders') || '[]');
+          orders.push({ ...orderData, ref, date: new Date().toISOString() });
+          localStorage.setItem('jcd_orders', JSON.stringify(orders));
+        }
+
+        Cart.clear();
+
+        /* Build payment instructions for success screen */
+        const totalFormatted = formatPrice(total);
+        let instructions = '';
+        if (payment === 'paypal') {
+          instructions = `
+            <p><strong>💳 PayPal Payment Required</strong></p>
+            <p style="margin-top:0.5rem">Please send <strong>${totalFormatted}</strong> to:<br>
+            📧 <strong>noritalumnue2@gmail.com</strong></p>
+            <p style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-light)">Use your order reference as the payment note.</p>`;
+        } else if (payment === 'bank') {
+          instructions = `
+            <p><strong>🏦 Bank Transfer Required</strong></p>
+            <p style="margin-top:0.5rem">Please transfer <strong>${totalFormatted}</strong> to our account.</p>
+            <p style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-light)">Bank details have been sent to your email address.</p>`;
+        } else {
+          instructions = `
+            <p><strong>🏠 Ready for Pickup!</strong></p>
+            <p style="margin-top:0.5rem">📍 <strong>Käppelierainweg 27, 4147 Aesch, Switzerland</strong></p>
+            <p style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-light)">Bring your order reference and pay <strong>${totalFormatted}</strong> in cash on arrival.</p>`;
+        }
+
+        document.getElementById('payment-instructions').innerHTML = instructions;
+        document.getElementById('order-ref').textContent = `Order reference: ${ref}`;
+        document.getElementById('checkout-main').style.display = 'none';
+        document.getElementById('order-success').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      } catch (err) {
+        errEl.textContent = `Order failed: ${err.message}`;
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = (typeof I18N !== 'undefined') ? I18N.t().checkout.placeOrder : 'Place Order →';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      /* Hide delivery section by default since Cash at Pickup is pre-selected */
+      document.getElementById('delivery-section').style.display = 'none';
+      populateSummary();
+    });
+
+    document.addEventListener('jcd:locale', populateSummary);
+  </script>
+
+  <style>
+    .payment-note {
+      margin-top: 1rem;
+      padding: 0.875rem 1rem;
+      background: var(--cream);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+  </style>
+</body>
+</html>

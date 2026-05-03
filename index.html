@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JCD Royal Treats — Artisan Pastries & Snacks</title>
+  <meta name="description" content="Fresh homemade pastries — banana bread, puff puff, chin chin, meat pie and more. Order online for delivery." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a class="navbar-brand" href="index.html">
+        <span class="logo-icon">👑</span>
+        <div class="brand-text">
+          <span class="brand-name">JCD Royal Treats</span>
+          <span class="brand-tagline">Baked with love</span>
+        </div>
+      </a>
+      <ul class="navbar-links" id="nav-links">
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="products.html" data-i18n="nav.menu">Menu</a></li>
+        <li><a href="cart.html" data-i18n="nav.cart">Cart</a></li>
+        <li><a href="admin.html" data-i18n="nav.admin">Admin</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <div class="locale-selectors">
+          <div class="selector-wrap">
+            <button class="selector-btn" onclick="I18N.toggleDropdown('country-menu')">
+              <span class="jcd-country-flag">🇨🇭</span>
+              <span class="jcd-country-name">Switzerland</span>
+              <span class="selector-arrow">▾</span>
+            </button>
+            <div class="selector-menu" id="country-menu">
+              <button data-country="ch" onclick="I18N.setCountry('ch')">🇨🇭 Switzerland</button>
+              <button data-country="de" onclick="I18N.setCountry('de')">🇩🇪 Germany</button>
+              <button data-country="fr" onclick="I18N.setCountry('fr')">🇫🇷 France</button>
+            </div>
+          </div>
+          <div class="selector-wrap">
+            <button class="selector-btn" onclick="I18N.toggleDropdown('lang-menu')">
+              <span class="jcd-lang-code">EN</span>
+              <span class="selector-arrow">▾</span>
+            </button>
+            <div class="selector-menu" id="lang-menu">
+              <button data-lang="en" onclick="I18N.setLanguage('en')">🇬🇧 English</button>
+              <button data-lang="fr" onclick="I18N.setLanguage('fr')">🇫🇷 Français</button>
+              <button data-lang="de" onclick="I18N.setLanguage('de')">🇩🇪 Deutsch</button>
+            </div>
+          </div>
+        </div>
+        <a href="cart.html" class="cart-btn">
+          🛒 <span class="cart-count" style="display:none">0</span> Cart
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-badge" data-i18n="hero.badge">🍞 Fresh • Homemade • Delicious</span>
+      <h1 data-i18n-html="hero.title">Artisan Pastries<br>Made with Love</h1>
+      <p data-i18n="hero.sub">Discover the warm, rich flavours of West African pastries — freshly baked and ready for delivery to your door.</p>
+      <div class="hero-buttons">
+        <a href="products.html" class="btn btn-white btn-lg" data-i18n="hero.shopBtn">Shop Our Menu</a>
+        <a href="#featured" class="btn btn-outline-white btn-lg" data-i18n="hero.seeBtn">See Featured ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES STRIP -->
+  <div class="features-strip">
+    <div class="container">
+      <div class="feature-item">
+        <span class="feature-icon">🏠</span>
+        <h4 data-i18n="features.q">Homemade Quality</h4>
+        <p data-i18n="features.qSub">Every item made from scratch with love</p>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🚚</span>
+        <h4 data-i18n="features.d">Fast Delivery</h4>
+        <p data-i18n="features.dSub">Fresh to your door, same day</p>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🌿</span>
+        <h4 data-i18n="features.i">Fresh Ingredients</h4>
+        <p data-i18n="features.iSub">Only the finest quality ingredients</p>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">❤️</span>
+        <h4 data-i18n="features.c">Made with Care</h4>
+        <p data-i18n="features.cSub">Every bite tells a story</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED PRODUCTS -->
+  <section id="featured" style="background: var(--warm-white)">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label" data-i18n="home.featLabel">Our Bestsellers</span>
+        <h2 data-i18n="home.featTitle">Featured Treats</h2>
+        <p data-i18n="home.featSub">Handpicked favourites that our customers can't get enough of</p>
+      </div>
+      <div class="products-grid" id="featured-products">
+        <p style="color:var(--text-light);padding:2rem">Loading products…</p>
+      </div>
+      <div style="text-align:center; margin-top: 2.5rem">
+        <a href="products.html" class="btn btn-primary btn-lg" data-i18n="home.viewAll">View Full Menu →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about-section">
+    <div class="container">
+      <div class="about-visual">🍞</div>
+      <div class="about-content">
+        <span class="section-label" data-i18n="home.aboutLabel">Our Story</span>
+        <h2 data-i18n-html="home.aboutTitle">Baked with Heart,<br>Served with Pride</h2>
+        <p data-i18n="home.aboutP1">JCD Royal Treats started as a passion project — bringing the authentic flavours of West African pastries to the table. Every recipe is crafted with love and passed down through generations.</p>
+        <p data-i18n="home.aboutP2">From our famous Banana Bread to our crispy Chin Chin, every treat is made fresh with the finest ingredients. We believe great food brings people together.</p>
+        <a href="products.html" class="btn btn-primary" data-i18n="home.aboutBtn">Explore Our Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-brand-name">👑 JCD Royal Treats</div>
+        <p>Bringing the warmth and richness of homemade pastries to your door. Made fresh, baked with love.</p>
+      </div>
+      <div>
+        <h4 data-i18n="footer.menuTitle">Menu</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="products.html?cat=baked">Baked Goods</a></li>
+          <li><a href="products.html?cat=savory">Savory</a></li>
+          <li><a href="products.html?cat=chips">Chips &amp; Snacks</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="footer.linksTitle">Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="cart.html">My Cart</a></li>
+          <li><a href="checkout.html">Checkout</a></li>
+          <li><a href="admin.html">Admin Panel</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="footer.contactTitle">Contact</h4>
+        <ul>
+          <li><a href="mailto:noritalumnue2@gmail.com">📧 noritalumnue2@gmail.com</a></li>
+          <li><a href="#">📱 +41 xx xxx xxxx</a></li>
+          <li><a href="#">📍 Käppelierainweg 27, 4147 Aesch, Switzerland</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer.copy">© 2025 JCD Royal Treats. All rights reserved.</span>
+      <span data-i18n="footer.tagline">Made with ❤️ and lots of butter</span>
+    </div>
+  </footer>
+
+  <div id="cart-toast" class="toast"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    async function renderFeatured() {
+      const products = await loadProducts();
+      const featured = products.filter(p => p.featured);
+      document.getElementById('featured-products').innerHTML =
+        featured.length ? featured.map(createProductCard).join('') : '<p style="color:var(--text-light)">No featured products yet.</p>';
+    }
+    document.addEventListener('DOMContentLoaded', renderFeatured);
+    document.addEventListener('jcd:locale', renderFeatured);
+  </script>
+</body>
+</html>

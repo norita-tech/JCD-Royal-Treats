@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — JCD Royal Treats</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a class="navbar-brand" href="index.html">
+        <span class="logo-icon">👑</span>
+        <div class="brand-text">
+          <span class="brand-name">JCD Royal Treats</span>
+          <span class="brand-tagline">Baked with love</span>
+        </div>
+      </a>
+      <ul class="navbar-links" id="nav-links">
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="products.html" data-i18n="nav.menu">Menu</a></li>
+        <li><a href="cart.html" data-i18n="nav.cart">Cart</a></li>
+        <li><a href="admin.html" data-i18n="nav.admin">Admin</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <div class="locale-selectors">
+          <div class="selector-wrap">
+            <button class="selector-btn" onclick="I18N.toggleDropdown('country-menu')">
+              <span class="jcd-country-flag">🇨🇭</span>
+              <span class="jcd-country-name">Switzerland</span>
+              <span class="selector-arrow">▾</span>
+            </button>
+            <div class="selector-menu" id="country-menu">
+              <button data-country="ch" onclick="I18N.setCountry('ch')">🇨🇭 Switzerland</button>
+              <button data-country="de" onclick="I18N.setCountry('de')">🇩🇪 Germany</button>
+              <button data-country="fr" onclick="I18N.setCountry('fr')">🇫🇷 France</button>
+            </div>
+          </div>
+          <div class="selector-wrap">
+            <button class="selector-btn" onclick="I18N.toggleDropdown('lang-menu')">
+              <span class="jcd-lang-code">EN</span>
+              <span class="selector-arrow">▾</span>
+            </button>
+            <div class="selector-menu" id="lang-menu">
+              <button data-lang="en" onclick="I18N.setLanguage('en')">🇬🇧 English</button>
+              <button data-lang="fr" onclick="I18N.setLanguage('fr')">🇫🇷 Français</button>
+              <button data-lang="de" onclick="I18N.setLanguage('de')">🇩🇪 Deutsch</button>
+            </div>
+          </div>
+        </div>
+        <a href="cart.html" class="cart-btn">
+          🛒 <span class="cart-count" style="display:none">0</span> Cart
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- LOGIN SCREEN -->
+  <div id="admin-login" class="admin-login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="logo-emoji">👑</span>
+        <h2>Admin Panel</h2>
+        <p>JCD Royal Treats — Management</p>
+      </div>
+      <div class="form-group">
+        <label for="admin-pw">Password</label>
+        <input type="password" id="admin-pw" placeholder="Enter admin password" autocomplete="current-password" />
+        <span id="login-error" class="error-msg"></span>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="login()">Sign In →</button>
+      <p style="text-align:center;font-size:0.8rem;color:var(--text-light);margin-top:1rem">
+        Demo password: <strong>admin123</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD (shown after login) -->
+  <div id="admin-content" class="admin-layout" style="display:none">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <h3>👑 Admin Panel</h3>
+        <p>JCD Royal Treats</p>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="#" class="active">📦 Products</a></li>
+        <li><a href="#" onclick="viewOrders(); return false;">🧾 Orders</a></li>
+        <li>
+          <a href="index.html">🏠 View Site</a>
+        </li>
+        <li>
+          <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="admin-main">
+      <h2>Dashboard</h2>
+      <p class="admin-subtitle">Manage your products and view store stats</p>
+
+      <!-- Stats -->
+      <div class="admin-stats">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fef3c7">📦</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-products">—</div>
+            <div class="stat-label">Total Products</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#d1fae5">🧾</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-orders">—</div>
+            <div class="stat-label">Orders Placed</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#ede9fe">💰</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-revenue">—</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fee2e2">🏷️</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-categories">—</div>
+            <div class="stat-label">Categories</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Table -->
+      <div class="admin-card" id="products-panel">
+        <div class="admin-card-header">
+          <h3>📦 Product Catalogue</h3>
+          <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Add Product</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th width="60"></th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Weight</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-light)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Orders Table (hidden by default) -->
+      <div class="admin-card" id="orders-panel" style="display:none;margin-top:1.5rem">
+        <div class="admin-card-header">
+          <h3>🧾 Recent Orders</h3>
+          <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('orders-panel').style.display='none'">Close</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ADD / EDIT PRODUCT MODAL -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Add New Product</h3>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+      </div>
+      <form id="product-form" onsubmit="event.preventDefault(); saveProduct()">
+
+        <div class="form-group">
+          <label for="p-name">Product Name *</label>
+          <input type="text" id="p-name" placeholder="e.g. Banana Bread" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="p-price">Price (CHF) *</label>
+            <input type="number" id="p-price" placeholder="7.50" min="0.01" step="0.01" required />
+          </div>
+          <div class="form-group">
+            <label for="p-category">Category *</label>
+            <select id="p-category" required>
+              <option value="baked">Baked</option>
+              <option value="fried">Fried</option>
+              <option value="savory">Savory</option>
+              <option value="snacks">Snacks</option>
+              <option value="chips">Chips</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="p-weight">Weight per item (grams) *</label>
+            <input type="number" id="p-weight" placeholder="250" min="1" step="1" required />
+            <small style="color:var(--text-light);font-size:0.78rem">Used to calculate shipping cost</small>
+          </div>
+          <div class="form-group">
+            <label for="p-emoji">Emoji Icon</label>
+            <input type="text" id="p-emoji" placeholder="🍞" maxlength="4" />
+          </div>
+          <div class="form-group">
+            <label for="p-image">Product Photo (jpg/png/webp, max 5 MB)</label>
+            <input type="file" id="p-image" accept=".jpg,.jpeg,.png,.webp"
+                   onchange="previewImage(this)"
+                   style="padding:6px 10px;font-size:0.85rem" />
+          </div>
+        </div>
+
+        <!-- Live image preview -->
+        <div style="margin-bottom:1rem">
+          <img id="img-preview" src="" alt="Preview"
+               style="display:none;max-height:140px;border-radius:var(--radius-sm);object-fit:cover;border:2px solid var(--border)" />
+        </div>
+
+        <div class="form-group">
+          <label for="p-description">Description *</label>
+          <textarea id="p-description" placeholder="Describe this product…" rows="3" required></textarea>
+        </div>
+
+        <div style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem">
+          <button type="button" class="btn btn-outline-primary" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="admin-toast" class="toast"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

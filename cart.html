@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — JCD Royal Treats</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a class="navbar-brand" href="index.html">
+        <span class="logo-icon">👑</span>
+        <div class="brand-text">
+          <span class="brand-name">JCD Royal Treats</span>
+          <span class="brand-tagline">Baked with love</span>
+        </div>
+      </a>
+      <ul class="navbar-links" id="nav-links">
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="products.html" data-i18n="nav.menu">Menu</a></li>
+        <li><a href="cart.html" data-i18n="nav.cart">Cart</a></li>
+        <li><a href="admin.html" data-i18n="nav.admin">Admin</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <div class="locale-selectors">
+          <div class="selector-wrap">
+            <button class="selector-btn" onclick="I18N.toggleDropdown('country-menu')">
+              <span class="jcd-country-flag">🇨🇭</span>
+              <span class="jcd-country-name">Switzerland</span>
+              <span class="selector-arrow">▾</span>
+            </button>
+            <div class="selector-menu" id="country-menu">
+              <button data-country="ch" onclick="I18N.setCountry('ch')">🇨🇭 Switzerland</button>
+              <button data-country="de" onclick="I18N.setCountry('de')">🇩🇪 Germany</button>
+              <button data-country="fr" onclick="I18N.setCountry('fr')">🇫🇷 France</button>
+            </div>
+          </div>
+          <div class="selector-wrap">
+            <button class="selector-btn" onclick="I18N.toggleDropdown('lang-menu')">
+              <span class="jcd-lang-code">EN</span>
+              <span class="selector-arrow">▾</span>
+            </button>
+            <div class="selector-menu" id="lang-menu">
+              <button data-lang="en" onclick="I18N.setLanguage('en')">🇬🇧 English</button>
+              <button data-lang="fr" onclick="I18N.setLanguage('fr')">🇫🇷 Français</button>
+              <button data-lang="de" onclick="I18N.setLanguage('de')">🇩🇪 Deutsch</button>
+            </div>
+          </div>
+        </div>
+        <a href="cart.html" class="cart-btn">
+          🛒 <span class="cart-count" style="display:none">0</span> Cart
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1 data-i18n="cart.pageTitle">🛒 My Cart</h1>
+    <p data-i18n="cart.pageSub">Review your order before checking out</p>
+  </div>
+
+  <!-- CART CONTENT -->
+  <section>
+    <div class="container">
+      <div id="cart-container"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-brand-name">👑 JCD Royal Treats</div>
+        <p>Bringing the warmth and richness of homemade pastries to your door. Made fresh, baked with love.</p>
+      </div>
+      <div>
+        <h4 data-i18n="footer.menuTitle">Menu</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="products.html?cat=baked">Baked Goods</a></li>
+          <li><a href="products.html?cat=savory">Savory</a></li>
+          <li><a href="products.html?cat=chips">Chips &amp; Snacks</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="footer.linksTitle">Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="cart.html">My Cart</a></li>
+          <li><a href="checkout.html">Checkout</a></li>
+          <li><a href="admin.html">Admin Panel</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="footer.contactTitle">Contact</h4>
+        <ul>
+          <li><a href="mailto:noritalumnue2@gmail.com">📧 noritalumnue2@gmail.com</a></li>
+          <li><a href="#">📱 +41 xx xxx xxxx</a></li>
+          <li><a href="#">📍 Käppelierainweg 27, 4147 Aesch, Switzerland</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer.copy">© 2025 JCD Royal Treats. All rights reserved.</span>
+      <span data-i18n="footer.tagline">Made with ❤️ and lots of butter</span>
+    </div>
+  </footer>
+
+  <div id="cart-toast" class="toast"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function renderCart() {
+      const items    = Cart.getItems();
+      const subtotal = Cart.getSubtotal();
+      const delivery = Cart.getDelivery();
+      const total    = Cart.getTotal();
+      const container = document.getElementById('cart-container');
+      const tr = (typeof I18N !== 'undefined') ? I18N.t().cart : {};
+
+      if (!items.length) {
+        container.innerHTML = `
+          <div class="empty-cart">
+            <span class="empty-icon">🛒</span>
+            <h3>${tr.emptyTitle || 'Your cart is empty'}</h3>
+            <p>${tr.emptyMsg || "Looks like you haven't added anything yet."}</p>
+            <a href="products.html" class="btn btn-primary btn-lg">${tr.emptyBtn || 'Browse Menu'}</a>
+          </div>`;
+        return;
+      }
+
+      const rows = items.map(item => `
+        <tr>
+          <td>
+            <div class="cart-item-product">
+              <div class="cart-item-img" style="background:${item.bg}">${item.emoji}</div>
+              <div>
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-cat">${item.category}</div>
+              </div>
+            </div>
+          </td>
+          <td>${formatPrice(item.price)}</td>
+          <td>
+            <div class="qty-control">
+              <button onclick="changeQty(${item.id}, ${item.qty - 1})" aria-label="Decrease">−</button>
+              <input type="number" value="${item.qty}" min="1" max="99"
+                     onchange="changeQty(${item.id}, parseInt(this.value))" aria-label="Quantity" />
+              <button onclick="changeQty(${item.id}, ${item.qty + 1})" aria-label="Increase">+</button>
+            </div>
+          </td>
+          <td><strong>${formatPrice(item.price * item.qty)}</strong></td>
+          <td>
+            <button class="remove-btn" onclick="removeItem(${item.id})" title="Remove item">✕</button>
+          </td>
+        </tr>`).join('');
+
+      container.innerHTML = `
+        <div class="cart-layout">
+          <div>
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th>${tr.product || 'Product'}</th>
+                  <th>${tr.price || 'Price'}</th>
+                  <th>${tr.qty || 'Quantity'}</th>
+                  <th>${tr.total || 'Total'}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+            <div style="margin-top:1rem; display:flex; gap:1rem; flex-wrap:wrap">
+              <a href="products.html" class="btn btn-outline-primary btn-sm">${tr.continue || '← Continue Shopping'}</a>
+              <button onclick="clearCart()" class="btn btn-sm" style="background:#fff1f2;color:var(--danger);border:2px solid #fee2e2;">${tr.clear || 'Clear Cart'}</button>
+            </div>
+          </div>
+
+          <div class="order-summary">
+            <h3>${tr.summary || 'Order Summary'}</h3>
+            <div class="summary-row"><span>${tr.subtotal || 'Subtotal'}</span><span>${formatPrice(subtotal)}</span></div>
+            <div class="summary-row"><span>${tr.delivery || 'Delivery fee'}</span><span>${formatPrice(delivery)}</span></div>
+            <div class="summary-row total"><span>${tr.grandTotal || 'Total'}</span><span class="price">${formatPrice(total)}</span></div>
+            <a href="checkout.html" class="btn btn-primary btn-lg btn-block checkout-link">${tr.checkout || 'Proceed to Checkout →'}</a>
+            <p style="text-align:center;font-size:0.8rem;color:var(--text-light);margin-top:0.75rem">
+              ${tr.secure || '🔒 Secure checkout'}
+            </p>
+          </div>
+        </div>`;
+    }
+
+    function changeQty(id, qty) {
+      Cart.updateQty(id, qty);
+      renderCart();
+    }
+
+    function removeItem(id) {
+      Cart.remove(id);
+      renderCart();
+    }
+
+    function clearCart() {
+      if (confirm('Remove all items from your cart?')) {
+        Cart.clear();
+        renderCart();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderCart);
+    document.addEventListener('jcd:locale', renderCart);
+  </script>
+</body>
+</html>
