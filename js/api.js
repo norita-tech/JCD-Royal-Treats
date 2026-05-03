@@ -54,4 +54,8 @@ const api = {
     return this.request('POST', '/paystack/initialize', { email, amount, orderRef, callbackUrl });
   },
   verifyPayment(reference) { return this.request('GET', `/paystack/verify/${reference}`); },
+
+  /* Stripe */
+  createStripeSession(orderData)           { return this.request('POST', '/stripe/create-checkout-session', orderData); },
+  verifyStripePayment(sessionId, orderRef) { return this.request('POST', '/stripe/verify', { sessionId, orderRef }); },
 };

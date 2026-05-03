@@ -23,6 +23,7 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/orders',   require('./routes/orders'));
 app.use('/api/auth',     require('./routes/auth'));
 app.use('/api/paystack', require('./routes/paystack'));
+app.use('/api/stripe',   require('./routes/stripe'));
 
 /* Fallback — serve index.html for any unknown path */
 app.get('*', (_req, res) => {

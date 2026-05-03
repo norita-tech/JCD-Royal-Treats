@@ -173,6 +173,13 @@
                   <span data-i18n="checkout.bankSub">Direct bank transfer to our account</span>
                 </div>
               </label>
+              <label class="payment-option" id="pay-stripe">
+                <input type="radio" name="payment" value="stripe" onchange="selectPayment(this)" />
+                <div class="payment-label">
+                  <strong>💳 Pay by Card</strong>
+                  <span>Secure card payment via Stripe — Visa, Mastercard, Amex</span>
+                </div>
+              </label>
             </div>
 
             <!-- Pickup info (shown by default) -->
@@ -189,6 +196,12 @@
             <!-- Bank transfer info -->
             <div id="bank-note" class="payment-note" style="display:none">
               <p>🏦 <span data-i18n="checkout.bankNote">After placing your order, transfer the exact amount. Bank details will be sent to your email.</span></p>
+            </div>
+
+            <!-- Stripe info -->
+            <div id="stripe-note" class="payment-note" style="display:none;background:#f0f4ff;border-left:3px solid #4f46e5;">
+              <p>🔒 <strong>Secure Card Payment</strong></p>
+              <p style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-light)">You'll be taken to Stripe's secure checkout page to complete your payment. Your card details are never stored on our servers.</p>
             </div>
           </div>
 
@@ -298,13 +311,17 @@
       document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
       radio.closest('.payment-option').classList.add('selected');
 
-      const isPickup = radio.value === 'pickup';
-      document.getElementById('pickup-note').style.display  = isPickup ? 'block' : 'none';
-      document.getElementById('paypal-note').style.display  = radio.value === 'paypal' ? 'block' : 'none';
-      document.getElementById('bank-note').style.display    = radio.value === 'bank'   ? 'block' : 'none';
+      const v = radio.value;
+      const isPickup = v === 'pickup';
+      document.getElementById('pickup-note').style.display  = isPickup   ? 'block' : 'none';
+      document.getElementById('paypal-note').style.display  = v === 'paypal'  ? 'block' : 'none';
+      document.getElementById('bank-note').style.display    = v === 'bank'    ? 'block' : 'none';
+      document.getElementById('stripe-note').style.display  = v === 'stripe'  ? 'block' : 'none';
 
-      /* Show/hide delivery address section */
       document.getElementById('delivery-section').style.display = isPickup ? 'none' : 'block';
+
+      const btn = document.querySelector('[onclick="placeOrder()"]');
+      btn.textContent = v === 'stripe' ? 'Pay by Card →' : 'Place Order →';
 
       populateSummary();
     }
@@ -345,17 +362,36 @@
       const deliveryFee = getDeliveryForPayment(payment);
       const total       = subtotal + deliveryFee;
 
+      const country  = localStorage.getItem('jcd_country') || 'ch';
+      const currency = (typeof I18N !== 'undefined') ? I18N.COUNTRIES[country].currency : 'CHF';
+      const rate     = (typeof I18N !== 'undefined') ? I18N.COUNTRIES[country].rate     : 1;
+
       const orderData = {
         firstName, lastName, email, phone, address, city, postal, notes,
         paymentMethod: payment,
-        items:        Cart.getItems(),
-        subtotal, deliveryFee, total,
+        items: Cart.getItems(),
+        subtotal, deliveryFee, total, currency, rate,
       };
 
       const btn = document.querySelector('[onclick="placeOrder()"]');
       btn.disabled = true;
-      btn.textContent = 'Placing order…';
+      btn.textContent = payment === 'stripe' ? 'Redirecting to payment…' : 'Placing order…';
 
+      /* ── Stripe: redirect to Stripe Checkout ── */
+      if (payment === 'stripe') {
+        try {
+          const result = await api.createStripeSession(orderData);
+          window.location.href = result.url;
+        } catch (err) {
+          errEl.textContent = `Payment error: ${err.message}`;
+          errEl.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Pay by Card →';
+        }
+        return;
+      }
+
+      /* ── Cash / PayPal / Bank Transfer ── */
       let ref;
       try {
         try {
@@ -370,7 +406,6 @@
 
         Cart.clear();
 
-        /* Build payment instructions for success screen */
         const totalFormatted = formatPrice(total);
         let instructions = '';
         if (payment === 'paypal') {
@@ -401,12 +436,49 @@
         errEl.textContent = `Order failed: ${err.message}`;
         errEl.style.display = 'block';
         btn.disabled = false;
-        btn.textContent = (typeof I18N !== 'undefined') ? I18N.t().checkout.placeOrder : 'Place Order →';
+        btn.textContent = 'Place Order →';
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      /* Hide delivery section by default since Cash at Pickup is pre-selected */
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+
+      /* ── Stripe payment confirmed ── */
+      if (params.get('stripe_success') === 'true') {
+        const ref       = params.get('ref');
+        const sessionId = params.get('session_id');
+        document.getElementById('checkout-main').style.display  = 'none';
+        document.getElementById('empty-checkout').style.display = 'none';
+        document.getElementById('order-success').style.display  = 'block';
+        document.getElementById('payment-instructions').innerHTML = '<p>Verifying your payment…</p>';
+        try {
+          await api.verifyStripePayment(sessionId, ref);
+          Cart.clear();
+          document.getElementById('payment-instructions').innerHTML = `
+            <p><strong>✅ Payment Confirmed!</strong></p>
+            <p style="margin-top:0.5rem">Your card payment was successful. We'll start preparing your treats right away!</p>
+            <p style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-light)">A confirmation will be sent to your email.</p>`;
+        } catch {
+          document.getElementById('payment-instructions').innerHTML = `
+            <p style="color:var(--danger)">⚠️ Payment received but could not be verified automatically. Please contact us with your order reference.</p>
+            <p style="margin-top:0.4rem;font-size:0.85rem">📧 noritalumnue2@gmail.com</p>`;
+        }
+        document.getElementById('order-ref').textContent = ref ? `Order reference: ${ref}` : '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      /* ── Stripe payment cancelled ── */
+      if (params.get('stripe_cancelled') === 'true') {
+        document.getElementById('delivery-section').style.display = 'none';
+        populateSummary();
+        const errEl = document.getElementById('checkout-error');
+        errEl.textContent = 'Payment was cancelled. You can try again or choose a different payment method.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      /* ── Normal checkout ── */
       document.getElementById('delivery-section').style.display = 'none';
       populateSummary();
     });

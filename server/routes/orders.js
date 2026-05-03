@@ -63,7 +63,7 @@ router.post('/', (req, res) => {
 
 /* PATCH /api/orders/:id/status  — admin only */
 router.patch('/:id/status', requireAdmin, (req, res) => {
-  const VALID = ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'cancelled'];
+  const VALID = ['pending', 'pending_payment', 'paid', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'cancelled'];
   const { status } = req.body;
   if (!VALID.includes(status)) {
     return res.status(400).json({ error: `status must be one of: ${VALID.join(', ')}` });
