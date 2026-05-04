@@ -198,7 +198,7 @@ async function viewOrders() {
         <td><strong>${o.ref}</strong></td>
         <td>${o.first_name} ${o.last_name}<br><small style="color:var(--text-light)">${o.email}</small></td>
         <td style="max-width:200px;font-size:0.85rem">${o.items_summary || '—'}</td>
-        <td><strong>R${Number(o.total).toFixed(2)}</strong></td>
+        <td><strong>${formatCHF(o.total)}</strong></td>
         <td style="text-transform:capitalize">${o.payment_method}</td>
         <td>
           <select onchange="updateStatus(${o.id}, this.value)" style="border:2px solid var(--border);border-radius:6px;padding:4px 8px;font-family:inherit;font-size:0.82rem">
