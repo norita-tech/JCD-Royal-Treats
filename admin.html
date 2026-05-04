@@ -152,7 +152,7 @@
                 <th>Name</th>
                 <th>Category</th>
                 <th>Price</th>
-                <th>Weight</th>
+                <th>Unit / Weight</th>
                 <th>Description</th>
                 <th>Actions</th>
               </tr>
@@ -224,7 +224,15 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="p-weight">Weight per item (grams) *</label>
+            <label for="p-unit">Sold by *</label>
+            <select id="p-unit">
+              <option value="piece">piece</option>
+              <option value="litre">litre (L)</option>
+              <option value="kg">kg</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="p-weight">Weight per unit (grams) *</label>
             <input type="number" id="p-weight" placeholder="250" min="1" step="1" required />
             <small style="color:var(--text-light);font-size:0.78rem">Used to calculate shipping cost</small>
           </div>

@@ -41,14 +41,14 @@ router.get('/:id', (req, res) => {
 
 /* POST /api/products  — admin only, supports optional image upload */
 router.post('/', requireAdmin, upload.single('image'), (req, res) => {
-  const { name, price, category, description, emoji, bg, featured, badge, weight } = req.body;
+  const { name, price, category, description, emoji, bg, featured, badge, weight, unit } = req.body;
   if (!name || !price || !category || !description) {
     return res.status(400).json({ error: 'name, price, category and description are required' });
   }
   const image_url = req.file ? `/uploads/${req.file.filename}` : null;
   const result = db.prepare(`
-    INSERT INTO products (name, price, category, description, emoji, bg, featured, badge, image_url, weight)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO products (name, price, category, description, emoji, bg, featured, badge, image_url, weight, unit)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     name, parseFloat(price), category, description,
     emoji || '🍞',
@@ -56,7 +56,8 @@ router.post('/', requireAdmin, upload.single('image'), (req, res) => {
     parseInt(featured) || 0,
     badge || null,
     image_url,
-    parseInt(weight) || 250
+    parseInt(weight) || 250,
+    unit || 'piece'
   );
   res.status(201).json(normalise(db.prepare('SELECT * FROM products WHERE id = ?').get(result.lastInsertRowid)));
 });
@@ -66,11 +67,11 @@ router.put('/:id', requireAdmin, upload.single('image'), (req, res) => {
   const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id);
   if (!existing) return res.status(404).json({ error: 'Product not found' });
 
-  const { name, price, category, description, emoji, bg, featured, badge, weight } = req.body;
+  const { name, price, category, description, emoji, bg, featured, badge, weight, unit } = req.body;
   const image_url = req.file ? `/uploads/${req.file.filename}` : existing.image_url;
 
   db.prepare(`
-    UPDATE products SET name=?, price=?, category=?, description=?, emoji=?, bg=?, featured=?, badge=?, image_url=?, weight=? WHERE id=?
+    UPDATE products SET name=?, price=?, category=?, description=?, emoji=?, bg=?, featured=?, badge=?, image_url=?, weight=?, unit=? WHERE id=?
   `).run(
     name        ?? existing.name,
     price       !== undefined ? parseFloat(price)   : existing.price,
@@ -82,6 +83,7 @@ router.put('/:id', requireAdmin, upload.single('image'), (req, res) => {
     badge       !== undefined ? badge               : existing.badge,
     image_url,
     weight      !== undefined ? parseInt(weight)    : (existing.weight ?? 250),
+    unit        ?? existing.unit ?? 'piece',
     req.params.id
   );
   res.json(normalise(db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id)));

@@ -14,8 +14,9 @@ const db = new DatabaseSync(path.join(DATA_DIR, 'jcd_treats.db'));
 db.exec('PRAGMA journal_mode = WAL');
 db.exec('PRAGMA foreign_keys = ON');
 
-/* Add weight column to existing databases (safe — silently skipped if already present) */
 try { db.exec('ALTER TABLE products ADD COLUMN weight INTEGER DEFAULT 250'); } catch {}
+try { db.exec('ALTER TABLE products ADD COLUMN unit TEXT DEFAULT \'piece\''); } catch {}
+try { db.exec("UPDATE products SET unit = 'litre' WHERE name IN ('Chin Chin', 'Peanut Burger') AND (unit IS NULL OR unit = 'piece')"); } catch {}
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS products (

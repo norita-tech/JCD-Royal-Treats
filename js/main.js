@@ -59,12 +59,13 @@ function createProductCard(product) {
         <div class="product-name">${product.name}</div>
         <div class="product-desc">${desc}</div>
         <div class="product-footer">
-          <span class="product-price">${formatPrice(product.price)}</span>
+          <span class="product-price">${formatPrice(product.price)}${product.unit === 'litre' ? '<small style="font-size:0.7em;font-weight:500;color:var(--text-light)"> / L</small>' : ''}</span>
           <div class="card-actions">
             <div class="card-qty-stepper">
-              <button type="button" onclick="let i=this.nextElementSibling; if(+i.value>1) i.stepDown()">−</button>
-              <input type="number" class="qty-input" value="1" min="1" max="99" aria-label="Quantity" />
-              <button type="button" onclick="this.previousElementSibling.stepUp()">+</button>
+              <button type="button" onclick="let i=this.closest('.card-qty-stepper').querySelector('.qty-input'); if(+i.value>1) i.stepDown()">−</button>
+              <input type="number" class="qty-input" value="1" min="1" max="99" aria-label="${product.unit === 'litre' ? 'Litres' : 'Quantity'}" />
+              ${product.unit === 'litre' ? '<span style="padding:0 5px;font-size:0.78rem;color:var(--text-light);line-height:1">L</span>' : ''}
+              <button type="button" onclick="this.closest('.card-qty-stepper').querySelector('.qty-input').stepUp()">+</button>
             </div>
             <button class="add-to-cart-btn" onclick="handleAddToCart(${product.id}, this)">
               ${(typeof I18N !== 'undefined') ? I18N.t().product.addToCart : '+ Add to Cart'}

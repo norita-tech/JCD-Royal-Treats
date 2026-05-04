@@ -132,6 +132,8 @@ const I18N = (() => {
         menuTitle: 'Menu', linksTitle: 'Quick Links', contactTitle: 'Contact',
         copy: '© 2025 JCD Royal Treats. All rights reserved.',
         tagline: 'Made with ❤️ and lots of butter',
+        allProducts: 'All Products', baked: 'Baked Goods', savory: 'Savory', chips: 'Chips & Snacks',
+        homeLink: 'Home', cartLink: 'My Cart', checkoutLink: 'Checkout', adminLink: 'Admin Panel',
       },
     },
 
@@ -224,6 +226,8 @@ const I18N = (() => {
         menuTitle: 'Menu', linksTitle: 'Liens Rapides', contactTitle: 'Contact',
         copy: '© 2025 JCD Royal Treats. Tous droits réservés.',
         tagline: 'Fait avec ❤️ et beaucoup de beurre',
+        allProducts: 'Tous les Produits', baked: 'Pâtisseries', savory: 'Salé', chips: 'Chips & Snacks',
+        homeLink: 'Accueil', cartLink: 'Mon Panier', checkoutLink: 'Commander', adminLink: 'Admin',
       },
     },
 
@@ -316,6 +320,8 @@ const I18N = (() => {
         menuTitle: 'Menü', linksTitle: 'Schnelllinks', contactTitle: 'Kontakt',
         copy: '© 2025 JCD Royal Treats. Alle Rechte vorbehalten.',
         tagline: 'Gemacht mit ❤️ und viel Butter',
+        allProducts: 'Alle Produkte', baked: 'Backwaren', savory: 'Herzhaft', chips: 'Chips & Snacks',
+        homeLink: 'Startseite', cartLink: 'Warenkorb', checkoutLink: 'Kasse', adminLink: 'Admin',
       },
     },
   };

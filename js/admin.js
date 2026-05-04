@@ -75,7 +75,7 @@ function renderProductsTable(products) {
       <td><strong>${p.name}</strong></td>
       <td><span class="badge badge-${p.category}">${p.category}</span></td>
       <td><strong>${formatCHF(p.price)}</strong></td>
-      <td style="color:var(--text-light)">${p.weight ?? 250} g</td>
+      <td style="color:var(--text-light)">${p.unit === 'litre' ? 'per L' : p.unit === 'kg' ? 'per kg' : 'per pc'}<br><small>${p.weight ?? 250} g</small></td>
       <td style="max-width:200px;color:var(--text-light)">${p.description.substring(0, 55)}…</td>
       <td>
         <button class="btn-edit"   onclick="openEditModal(${p.id})">Edit</button>
@@ -105,6 +105,7 @@ async function openEditModal(id) {
   document.getElementById('p-name').value        = product.name;
   document.getElementById('p-price').value       = product.price;
   document.getElementById('p-weight').value      = product.weight ?? 250;
+  document.getElementById('p-unit').value        = product.unit || 'piece';
   document.getElementById('p-category').value    = product.category;
   document.getElementById('p-emoji').value       = product.emoji;
   document.getElementById('p-description').value = product.description;
@@ -129,6 +130,7 @@ async function saveProduct() {
   const name        = document.getElementById('p-name').value.trim();
   const price       = parseFloat(document.getElementById('p-price').value);
   const weight      = parseInt(document.getElementById('p-weight').value) || 250;
+  const unit        = document.getElementById('p-unit').value;
   const category    = document.getElementById('p-category').value;
   const emoji       = document.getElementById('p-emoji').value.trim() || '🍞';
   const description = document.getElementById('p-description').value.trim();
@@ -143,6 +145,7 @@ async function saveProduct() {
   formData.append('name',        name);
   formData.append('price',       price);
   formData.append('weight',      weight);
+  formData.append('unit',        unit);
   formData.append('category',    category);
   formData.append('emoji',       emoji);
   formData.append('description', description);
