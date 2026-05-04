@@ -166,6 +166,13 @@
                   <span data-i18n="checkout.paypalSub">Secure online payment via PayPal</span>
                 </div>
               </label>
+              <label class="payment-option" id="pay-bank">
+                <input type="radio" name="payment" value="bank" onchange="selectPayment(this)" />
+                <div class="payment-label">
+                  <strong data-i18n="checkout.bank">🏦 Bank Transfer</strong>
+                  <span data-i18n="checkout.bankSub">Direct bank transfer to our account</span>
+                </div>
+              </label>
               <label class="payment-option" id="pay-stripe">
                 <input type="radio" name="payment" value="stripe" onchange="selectPayment(this)" />
                 <div class="payment-label">
@@ -184,6 +191,14 @@
             <!-- PayPal info -->
             <div id="paypal-note" class="payment-note" style="display:none">
               <p>💳 <span data-i18n="checkout.paypalNote">After placing your order, please send your payment to our PayPal: noritalumnue2@gmail.com — use your order reference as the payment note.</span></p>
+            </div>
+
+            <!-- Bank transfer info -->
+            <div id="bank-note" class="payment-note" style="display:none;background:#fffbeb;border-left:3px solid #d97706;">
+              <p>🏦 <strong>Bank Transfer Details</strong></p>
+              <p style="margin-top:0.5rem">Bank: <strong>PostFinance</strong></p>
+              <p>IBAN: <strong>CH29 0900 0000 1648 2648 6</strong></p>
+              <p style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-light)">Please use your order reference as the payment note. Your order will be processed once payment is received.</p>
             </div>
 
             <!-- Stripe info -->
@@ -303,6 +318,7 @@
       const isPickup = v === 'pickup';
       document.getElementById('pickup-note').style.display  = isPickup        ? 'block' : 'none';
       document.getElementById('paypal-note').style.display  = v === 'paypal'  ? 'block' : 'none';
+      document.getElementById('bank-note').style.display    = v === 'bank'    ? 'block' : 'none';
       document.getElementById('stripe-note').style.display  = v === 'stripe'  ? 'block' : 'none';
 
       document.getElementById('delivery-section').style.display = isPickup ? 'none' : 'block';
@@ -401,6 +417,13 @@
             <p style="margin-top:0.5rem">Please send <strong>${totalFormatted}</strong> to:<br>
             📧 <strong>noritalumnue2@gmail.com</strong></p>
             <p style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-light)">Use your order reference as the payment note.</p>`;
+        } else if (payment === 'bank') {
+          instructions = `
+            <p><strong>🏦 Bank Transfer Required</strong></p>
+            <p style="margin-top:0.5rem">Please transfer <strong>${totalFormatted}</strong> to:</p>
+            <p style="margin-top:0.4rem">Bank: <strong>PostFinance</strong></p>
+            <p>IBAN: <strong>CH29 0900 0000 1648 2648 6</strong></p>
+            <p style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-light)">Use your order reference as the payment note. We'll confirm your order once payment arrives.</p>`;
         } else {
           instructions = `
             <p><strong>🏠 Ready for Pickup!</strong></p>
